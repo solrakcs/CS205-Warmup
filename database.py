@@ -1,29 +1,35 @@
 import sqlite3
 
-# Open database file for querying
-database_file = sqlite3.connect('database_file.db')
-cursor = database_file.cursor()
+def init():
 
-# Create demo table
-cursor.execute('''
-    
-    CREATE TABLE IF NOT EXISTS movies (
-        title varchar(30),
-        budget decimal(15),
-        release date,
-        revenue decimal(15) );
-''')
+        # Open database file for querying
+        database_file = sqlite3.connect('database_file.db')
+        cursor = database_file.cursor()
 
-# Add two demo rows to table
-cursor.execute('''INSERT INTO movies VALUES ('Titanic', 200000000, '1997-12-19', 2187000000 );''')
-cursor.execute('''INSERT INTO movies VALUES ('Avatar', 12345, '2009-01-01', 1234567 );''')
+        # TODO Create tables for movies and production companies
+        cursor.execute('''
+            
+            CREATE TABLE IF NOT EXISTS movies (
 
-# Select all table rows
-command = '''SELECT title, revenue FROM movies; '''
-print (command)
-for row in cursor.execute(command): #WHERE title='Titanic'
-    print (row)
+            )
+       ''')
 
-#cursor.execute('''DROP TABLE movies;''');
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS production_companies (
 
-database_file.close()
+            )
+        ''')
+
+        # TODO Add data to both tables
+        #cursor.execute('''INSERT INTO movies VALUES ('Avatar', 12345, '2009-01-01', 1234567 );''')
+
+#Functions for calling from parser
+
+# get_category function receives the title of a movie and a requested column, and will print the requested column as a string
+# For example, get_category("Titanic", "revenue" will query for the revenue of Titanic, and print "200000000"
+# def get_category(title, category):
+    # TODO will only work without table joins for attributes in the movies table.
+    # TODO attributes in the production_companies table will require a join
+
+# get_maximum receives an attribute of a movie, revenue or rating, and prints the highest value of that attribute, as well as the title of the movie
+# def get_maximum(category)
