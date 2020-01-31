@@ -1,62 +1,70 @@
 import sqlite3
 import csv
 
-def init():
+class Database:
+        def __init__(self):
+                # Open database file for querying
+                self.database_file = sqlite3.connect('database_file.db')
+                self.cursor = self.database_file.cursor()
 
-        # Open database file for querying
-        database_file = sqlite3.connect('database_file.db')
-        cursor = database_file.cursor()
+                self.cursor.execute('''DROP TABLE movies;''')
+                self.cursor.execute('''DROP TABLE production_companies;''')
 
-        # TODO Create tables for movies and production companies
-        cursor.execute('''
-            
-            CREATE TABLE IF NOT EXISTS movies (
-            ID INT PRIMARY KEY NOT NULL,
-            TITLE CHAR(100) NOT NULL,
-            VOTE_AVERAGE REAL NOT NULL,
-            REVENUE BIGINT NOT NULL 
+                # Production companies
+                self.cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS production_companies (
+                        ref_id INT NOT NULL,
+                        name CHAR(100) NOT NULL,
+                        location CHAR(100) NOT NULL,
+                        founder CHAR(100) NOT NULL,
+                        PRIMARY KEY (ref_id)
+                    );
+                ''')
 
-            );
-       ''')
+                # Movies
+                self.cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS movies (
+                    id INT NOT NULL,
+                    title CHAR(100) NOT NULL,
+                    vote_average REAL NOT NULL,
+                    revenue BIGINT NOT NULL,
+                    PRIMARY KEY (title),
+                    FOREIGN KEY(id) REFERENCES production_companies (ref_id)
+                    );
+                ''')
 
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS production_companies (
-            REF_ID INT PRIMARY KEY NOT NULL,
-            NAME CHAR(100) NOT NULL,
-            LOCATION CHAR(100) NOT NULL,
-            FOUNDER CHAR(100) NOT NULL,
-            FOREIGN KEY(REF ID) REFERENCES movies (ID)
+                # Adding data to companies table
+                with open('Companies_Table.csv','r') as fin: # `with` statement available in 2.5+
+                    # csv.DictReader uses first line in file for column headings by default
+                    dr = csv.DictReader(fin) # comma is default delimiter
+                    to_db = [(i['ref_id'], i['name'], i['location'], i['founder']) for i in dr]
 
-            );
-        ''')
+                self.cursor.executemany("INSERT INTO production_companies (ref_id, name, location, founder) VALUES (?, ?, ?, ?);", to_db)
+                self.database_file.commit()
 
-        # ADDING DATA TO MOVIES TABLE
-        with open('Movies_Table.csv','rb') as fin: # `with` statement available in 2.5+
-    	    # csv.DictReader uses first line in file for column headings by default
-    	    dr = csv.DictReader(fin) # comma is default delimiter
-    	    to_db = [(i['ID'], i['TITLE'], i['VOTE_AVERAGE'], i['REVENUE']) for i in dr]
+                # Adding data to movies table
+                with open('Movies_Table.csv','r') as fin: # `with` statement available in 2.5+
+                    # csv.DictReader uses first line in file for column headings by default
+                    dr = csv.DictReader(fin) # comma is default delimiter
+                    to_db = [(i['id'], i['title'], i['vote_average'], i['revenue']) for i in dr]
 
-        cur.executemany("INSERT INTO movies (ID, TITLE, VOTE_AVERAGE, REVENUE) VALUES (?, ?, ?, ?);", to_db)
-        database_file.commit()
+                self.cursor.executemany("INSERT INTO movies (id, title, vote_average, revenue) VALUES (?, ?, ?, ?);", to_db)
+                self.database_file.commit()
+    
+        # Functions for calling from parser
+        def print_all_titles(self):
+            for row in self.cursor.execute('''SELECT title FROM movies;'''):
+                print(row[0])
 
+        def print_all_companies(self):
+            for row in self.cursor.execute('''SELECT name FROM production_companies;'''):
+                print(row[0])
 
-		# ADDING DATA TO COMPANIES TABLE
-        with open('Companies_Table.csv','rb') as fin: # `with` statement available in 2.5+
-    	    # csv.DictReader uses first line in file for column headings by default
-    	    dr = csv.DictReader(fin) # comma is default delimiter
-    	    to_db = [(i['REF_ID'], i['NAME'], i['LOCATION'], i['FOUNDER']) for i in dr]
+        # get_category function receives the title of a movie and a requested column, and will print the requested column as a string
+        # For example, get_category("Titanic", "revenue" will query for the revenue of Titanic, and print "200000000"
+        # def get_category(title, category):
+            # TODO will only work without table joins for attributes in the movies table.
+            # TODO attributes in the production_companies table will require a join
 
-        cur.executemany("INSERT INTO movies (REF_ID, NAME, LOCATION, FOUNDER) VALUES (?, ?, ?, ?);", to_db)
-        database_file.commit()
-
-
-#Functions for calling from parser
-
-# get_category function receives the title of a movie and a requested column, and will print the requested column as a string
-# For example, get_category("Titanic", "revenue" will query for the revenue of Titanic, and print "200000000"
-# def get_category(title, category):
-    # TODO will only work without table joins for attributes in the movies table.
-    # TODO attributes in the production_companies table will require a join
-
-# get_maximum receives an attribute of a movie, revenue or rating, and prints the highest value of that attribute, as well as the title of the movie
-# def get_maximum(category)
+        # get_maximum receives an attribute of a movie, revenue or rating, and prints the highest value of that attribute, as well as the title of the movie
+        # def get_maximum(category)
