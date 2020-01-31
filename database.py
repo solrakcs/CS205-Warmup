@@ -1,4 +1,5 @@
 import sqlite3
+import csv
 
 def init():
 
@@ -10,18 +11,44 @@ def init():
         cursor.execute('''
             
             CREATE TABLE IF NOT EXISTS movies (
+            ID INT PRIMARY KEY NOT NULL,
+            TITLE CHAR(100) NOT NULL,
+            VOTE_AVERAGE REAL NOT NULL,
+            REVENUE BIGINT NOT NULL 
 
-            )
+            );
        ''')
 
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS production_companies (
+            REF_ID INT PRIMARY KEY NOT NULL,
+            NAME CHAR(100) NOT NULL,
+            LOCATION CHAR(100) NOT NULL,
+            FOUNDER CHAR(100) NOT NULL,
+            FOREIGN KEY(REF ID) REFERENCES movies (ID)
 
-            )
+            );
         ''')
 
-        # TODO Add data to both tables
-        #cursor.execute('''INSERT INTO movies VALUES ('Avatar', 12345, '2009-01-01', 1234567 );''')
+        # ADDING DATA TO MOVIES TABLE
+        with open('Movies_Table.csv','rb') as fin: # `with` statement available in 2.5+
+    	    # csv.DictReader uses first line in file for column headings by default
+    	    dr = csv.DictReader(fin) # comma is default delimiter
+    	    to_db = [(i['ID'], i['TITLE'], i['VOTE_AVERAGE'], i['REVENUE']) for i in dr]
+
+        cur.executemany("INSERT INTO movies (ID, TITLE, VOTE_AVERAGE, REVENUE) VALUES (?, ?, ?, ?);", to_db)
+        database_file.commit()
+
+
+		# ADDING DATA TO COMPANIES TABLE
+        with open('Companies_Table.csv','rb') as fin: # `with` statement available in 2.5+
+    	    # csv.DictReader uses first line in file for column headings by default
+    	    dr = csv.DictReader(fin) # comma is default delimiter
+    	    to_db = [(i['REF_ID'], i['NAME'], i['LOCATION'], i['FOUNDER']) for i in dr]
+
+        cur.executemany("INSERT INTO movies (REF_ID, NAME, LOCATION, FOUNDER) VALUES (?, ?, ?, ?);", to_db)
+        database_file.commit()
+
 
 #Functions for calling from parser
 
