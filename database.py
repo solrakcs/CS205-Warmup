@@ -50,7 +50,7 @@ class Database:
 
                 self.cursor.executemany("INSERT INTO movies (id, title, vote_average, revenue) VALUES (?, ?, ?, ?);", to_db)
                 self.database_file.commit()
-    
+
         # Functions for calling from parser
         def print_all_titles(self):
             for row in self.cursor.execute('''SELECT title FROM movies;'''):
@@ -72,3 +72,24 @@ class Database:
 
         # get_maximum receives an attribute of a movie, revenue or rating, and prints the highest value of that attribute, as well as the title of the movie
         # def get_maximum(category)
+
+        def get_vote_average():
+            pass
+
+        def get_revenue():
+            pass
+
+        def get_proco_name():
+            pass
+
+        def get_proco_founder():
+            pass
+
+        def get_proco_location():
+            pass
+
+        def get_max_revenue():
+            pass
+
+        def get_max_rating():
+            pass
