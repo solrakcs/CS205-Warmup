@@ -60,17 +60,21 @@ class Database:
             for row in self.cursor.execute('''SELECT title FROM production_companies;'''):
                 print(row[0])
 
-        def get_vote_average():
-            pass
+        def get_vote_average(self, title):
+            for row in self.cursor.execute("SELECT vote_average FROM movies WHERE title = :title", (title,)):
+                print("The rating of "+title+" is "+str(row[0]))
 
-        def get_revenue():
-            pass
+        def get_revenue(self, title):
+            for row in self.cursor.execute("SELECT revenue FROM movies WHERE title = :title", (title,)):
+                print("The revenue of "+title+" is "+str(row[0])+" $")
 
-        def get_proco_name():
-            pass
+        def get_proco_name(self, title):
+            for row in self.cursor.execute("SELECT name FROM production_companies JOIN movies ON movies.id = production_companies.ref_id WHERE title = :title", (title,)):
+                print("The name of the production company of"+title+" is "+row[0])
 
-        def get_proco_founder():
-            pass
+        def get_proco_founder(self, title):
+            for row in self.cursor.execute("SELECT founder FROM production_companies JOIN movies ON movies.id = production_companies.ref_id WHERE title = :title", (title,)):
+                print("The name of the founder of "+title+" is "+row[0])
 
         def get_proco_location(self, title):
             for row in self.cursor.execute('''SELECT location FROM movies JOIN production_companies ON production_companies.ref_id = movies.id WHERE title="''' + str(title) + '";'):
