@@ -60,9 +60,6 @@ class Database:
             for row in self.cursor.execute('''SELECT name FROM production_companies;'''):
                 print(row[0])
 
-        
-
-
 
         # get_category function receives the title of a movie and a requested column, and will print the requested column as a string
         # For example, get_category("Titanic", "revenue" will query for the revenue of Titanic, and print "200000000"
@@ -73,17 +70,22 @@ class Database:
         # get_maximum receives an attribute of a movie, revenue or rating, and prints the highest value of that attribute, as well as the title of the movie
         # def get_maximum(category)
 
-        def get_vote_average():
-            pass
+        def get_vote_average(self, title):
+            for row in self.cursor.execute("SELECT vote_average FROM movies WHERE title = :title", (title,)):
+                print("The rating of "+title+" is "+str(row[0]))
 
-        def get_revenue():
-            pass
 
-        def get_proco_name():
-            pass
+        def get_revenue(self, title):
+            for row in self.cursor.execute("SELECT revenue FROM movies WHERE title = :title", (title,)):
+                print("The revenue of "+title+" is "+str(row[0])+" $")
 
-        def get_proco_founder():
-            pass
+        def get_proco_name(self, title):
+            for row in self.cursor.execute("SELECT name FROM production_companies JOIN movies ON movies.id = production_companies.ref_id WHERE title = :title", (title,)):
+                print("The name of the production company of"+title+" is "+row[0])
+
+        def get_proco_founder(self, title):
+            for row in self.cursor.execute("SELECT founder FROM production_companies JOIN movies ON movies.id = production_companies.ref_id WHERE title = :title", (title,)):
+                print("The name of the founder of "+title+" is "+row[0])
 
         def get_proco_location():
             pass
