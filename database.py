@@ -60,6 +60,10 @@ class Database:
             for row in self.cursor.execute('''SELECT name FROM production_companies;'''):
                 print(row[0])
 
+        
+
+
+
         # get_category function receives the title of a movie and a requested column, and will print the requested column as a string
         # For example, get_category("Titanic", "revenue" will query for the revenue of Titanic, and print "200000000"
         # def get_category(title, category):
