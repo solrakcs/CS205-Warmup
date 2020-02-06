@@ -57,17 +57,8 @@ class Database:
                 print(row[0])
 
         def print_all_companies(self):
-            for row in self.cursor.execute('''SELECT name FROM production_companies;'''):
+            for row in self.cursor.execute('''SELECT title FROM production_companies;'''):
                 print(row[0])
-
-        # get_category function receives the title of a movie and a requested column, and will print the requested column as a string
-        # For example, get_category("Titanic", "revenue" will query for the revenue of Titanic, and print "200000000"
-        # def get_category(title, category):
-            # TODO will only work without table joins for attributes in the movies table.
-            # TODO attributes in the production_companies table will require a join
-
-        # get_maximum receives an attribute of a movie, revenue or rating, and prints the highest value of that attribute, as well as the title of the movie
-        # def get_maximum(category)
 
         def get_vote_average():
             pass
@@ -81,11 +72,14 @@ class Database:
         def get_proco_founder():
             pass
 
-        def get_proco_location():
-            pass
+        def get_proco_location(self, title):
+            for row in self.cursor.execute('''SELECT location FROM movies JOIN production_companies ON production_companies.ref_id = movies.id WHERE title="''' + str(title) + '";'):
+                print(row[0])
 
-        def get_max_revenue():
-            pass
+        def get_max_revenue(self):
+            for row in self.cursor.execute('''SELECT title, MAX(revenue) FROM movies;'''):
+                print(str(row[0]) + ", " + str(row[1]))
 
-        def get_max_rating():
-            pass
+        def get_max_rating(self):
+            for row in self.cursor.execute('''SELECT title, MAX(vote_average) FROM movies;'''):
+                print(str(row[0]) + ", " + str(row[1]))
