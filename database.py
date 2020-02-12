@@ -2,7 +2,7 @@ import sqlite3
 import csv
 
 class Database:
-        def __init__(self):
+        def load_data(self):
                 # Open database file for querying
                 self.database_file = sqlite3.connect('database_file.db')
                 self.cursor = self.database_file.cursor()
@@ -34,7 +34,7 @@ class Database:
                 ''')
 
                 # Adding data to companies table
-                with open('Companies_Table.csv','r') as fin: # `with` statement available in 2.5+
+                with open('Companies_Tabaoeule.csv','r') as fin: # `with` statement available in 2.5+
                     # csv.DictReader uses first line in file for column headings by default
                     dr = csv.DictReader(fin) # comma is default delimiter
                     to_db = [(i['ref_id'], i['name'], i['location'], i['founder']) for i in dr]
