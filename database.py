@@ -2,7 +2,7 @@ import sqlite3
 import csv
 
 class Database:
-        def __init__(self):
+        def load_data(self):
                 # Open database file for querying
                 self.database_file = sqlite3.connect('database_file.db')
                 self.cursor = self.database_file.cursor()
@@ -34,31 +34,44 @@ class Database:
                 ''')
 
                 # Adding data to companies table
-                with open('Companies_Table.csv','r') as fin: # `with` statement available in 2.5+
-                    # csv.DictReader uses first line in file for column headings by default
-                    dr = csv.DictReader(fin) # comma is default delimiter
-                    to_db = [(i['ref_id'], i['name'], i['location'], i['founder']) for i in dr]
+                try:
+                    with open('Companies_Table.csv','r') as fin: # `with` statement available in 2.5+
+                        # csv.DictReader uses first line in file for column headings by default
+                        dr = csv.DictReader(fin) # comma is default delimiter
+                        to_db = [(i['ref_id'], i['name'], i['location'], i['founder']) for i in dr]
+                except FileNotFoundError:
+                    print("Companies data not available")
+                    return(1)
 
                 self.cursor.executemany("INSERT INTO production_companies (ref_id, name, location, founder) VALUES (?, ?, ?, ?);", to_db)
                 self.database_file.commit()
 
                 # Adding data to movies table
-                with open('Movies_Table.csv','r') as fin: # `with` statement available in 2.5+
-                    # csv.DictReader uses first line in file for column headings by default
-                    dr = csv.DictReader(fin) # comma is default delimiter
-                    to_db = [(i['id'], i['title'], i['vote_average'], i['revenue']) for i in dr]
+                try:
+                    with open('Movies_Table.csv','r') as fin: # `with` statement available in 2.5+
+                        # csv.DictReader uses first line in file for column headings by default
+                        dr = csv.DictReader(fin) # comma is default delimiter
+                        to_db = [(i['id'], i['title'], i['vote_average'], i['revenue']) for i in dr]
+                except FileNotFoundError:
+                    print("Movies data not available")
+                    return(1)
 
                 self.cursor.executemany("INSERT INTO movies (id, title, vote_average, revenue) VALUES (?, ?, ?, ?);", to_db)
                 self.database_file.commit()
+                return(0)
 
         # Functions for calling from parser
         def print_all_titles(self):
             for row in self.cursor.execute('''SELECT title FROM movies;'''):
                 print(row[0])
+            print()
+            print("Search finished\n")
 
         def print_all_companies(self):
-            for row in self.cursor.execute('''SELECT title FROM production_companies;'''):
+            for row in self.cursor.execute('''SELECT name FROM production_companies;'''):
                 print(row[0])
+            print()
+            print("Search finished\n")
 
         def get_vote_average(self, title):
             for row in self.cursor.execute("SELECT vote_average FROM movies WHERE title = :title", (title,)):
