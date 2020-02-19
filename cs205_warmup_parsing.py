@@ -9,15 +9,18 @@ Original file is located at
 from database import Database
 #Testing database error checking
 
+#initializes cases to terminate loop
 continue_ = True 
 database_initialized = False
 db = Database()
 
+#continues to allow user to search until they type exit
 while (continue_ == True):
   val = input("Enter command: ")
   words = len(val.split())
   if (val == "exit"):
       continue_ = False
+  #ensures that data is loaded
   elif (val == "load data"):
     flag = db.load_data()
     while (flag != 0):
@@ -65,6 +68,7 @@ while (continue_ == True):
         print("Too few or invalid arguments. Please try again\n")
 
     else:
+      #filters data into desired format
       arg1, arg2, arg3 = val.split('"')
       arg1 = arg1+"x"
       arg3 = "x"+arg3
