@@ -18,6 +18,8 @@ db = Database()
 while (continue_ == True):
   val = input("Enter command: ")
   words = len(val.split())
+  quotes = len(val.split('"'))
+    
   if (val == "exit"):
       continue_ = False
   #ensures that data is loaded
@@ -30,6 +32,7 @@ while (continue_ == True):
     database_initialized = True
     val = input("Enter command: ")
     words = len(val.split())
+    quotes = len(val.split('"'))
 
   if (database_initialized == False and continue_==True):
     print("Data has not been initialized. Please enter “load data”") 
@@ -67,7 +70,7 @@ while (continue_ == True):
     elif (words == 1 or words == 2):
         print("Too few or invalid arguments. Please try again\n")
 
-    else:
+    elif(quotes>1):
       #filters data into desired format
       arg1, arg2, arg3 = val.split('"')
       arg1 = arg1+"x"
@@ -98,3 +101,5 @@ while (continue_ == True):
 
       else:
         print(arg1 +" is not a valid input. Please try again or enter “help” for assistance")
+    else:
+      print("Invalid arguments. Please try again")
