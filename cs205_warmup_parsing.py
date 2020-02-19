@@ -15,6 +15,7 @@ db = Database()
 
 while (continue_ == True):
   val = input("Enter command: ")
+  words = len(val.split())
   if (val == "exit"):
       continue_ = False
   elif (val == "load data"):
@@ -25,6 +26,7 @@ while (continue_ == True):
     print("Data loaded")
     database_initialized = True
     val = input("Enter command: ")
+    words = len(val.split())
 
   if (database_initialized == False and continue_==True):
     print("Data has not been initialized. Please enter “load data”") 
@@ -44,11 +46,11 @@ while (continue_ == True):
       print("exit")
 
     elif(val == "max revenue"):
-        print("Query Input: max_revenue")
+        print("Query Input: max revenue")
         db.get_max_revenue()
 
     elif(val == "max rating"):
-        print("Query Input: max_rating")
+        print("Query Input: max rating")
         db.get_max_rating()
 
     elif(val == "print all titles"):
@@ -58,6 +60,9 @@ while (continue_ == True):
     elif(val == "print all companies"):
         print("Query Input: print all companies")
         db.print_all_companies()
+
+    elif (words == 1 or words == 2):
+        print("Too few or invalid arguments. Please try again\n")
 
     else:
       arg1, arg2, arg3 = val.split('"')
