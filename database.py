@@ -40,7 +40,7 @@ class Database:
                         dr = csv.DictReader(fin) # comma is default delimiter
                         to_db = [(i['ref_id'], i['name'], i['location'], i['founder']) for i in dr]
                 except FileNotFoundError:
-                    print("Companies data not available")
+                    print("Companies data not available\n")
                     return(1)
 
                 self.cursor.executemany("INSERT INTO production_companies (ref_id, name, location, founder) VALUES (?, ?, ?, ?);", to_db)
@@ -53,7 +53,7 @@ class Database:
                         dr = csv.DictReader(fin) # comma is default delimiter
                         to_db = [(i['id'], i['title'], i['vote_average'], i['revenue']) for i in dr]
                 except FileNotFoundError:
-                    print("Movies data not available")
+                    print("Movies data not available\n")
                     return(1)
 
                 self.cursor.executemany("INSERT INTO movies (id, title, vote_average, revenue) VALUES (?, ?, ?, ?);", to_db)
@@ -64,13 +64,11 @@ class Database:
         def print_all_titles(self):
             for row in self.cursor.execute('''SELECT title FROM movies;'''):
                 print(row[0])
-            print()
             print("Search finished\n")
 
         def print_all_companies(self):
             for row in self.cursor.execute('''SELECT name FROM production_companies;'''):
                 print(row[0])
-            print()
             print("Search finished\n")
 
         def get_vote_average(self, title):
